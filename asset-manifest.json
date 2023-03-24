@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/goit-react-hw-07-phonebook/static/css/main.03413043.css",
+    "main.js": "/goit-react-hw-07-phonebook/static/js/main.75bd6a95.js",
+    "static/media/wallpaperbetter.com_2560x1080.jpg": "/goit-react-hw-07-phonebook/static/media/wallpaperbetter.com_2560x1080.d68bd6801fe1e1f708e5.jpg",
+    "index.html": "/goit-react-hw-07-phonebook/index.html",
+    "main.03413043.css.map": "/goit-react-hw-07-phonebook/static/css/main.03413043.css.map",
+    "main.75bd6a95.js.map": "/goit-react-hw-07-phonebook/static/js/main.75bd6a95.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.03413043.css",
+    "static/js/main.75bd6a95.js"
+  ]
+}
