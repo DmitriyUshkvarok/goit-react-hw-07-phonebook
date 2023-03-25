@@ -1,34 +1,48 @@
-import { useState } from 'react';
 import css from './ContactForm.module.css';
-import { useSelector, useDispatch } from 'react-redux';
-import { addContact, getContacts } from '../../redux/contactsSlice';
-import { nanoid } from 'nanoid';
+import {
+  useCreateContactMutation,
+  useGetContactsQuery,
+} from 'redux/contactApi';
 import { toast } from 'react-toastify';
+import { useState } from 'react';
 
 function ContactForm() {
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
 
-  const onChangeName = e => setName(e.currentTarget.value);
-  const onChangeNunber = e => setNumber(e.currentTarget.value);
+  const [createContact, { isLoading }] = useCreateContactMutation();
+  const { data: contacts } = useGetContactsQuery();
 
-  const contacts = useSelector(getContacts);
-  const dispatch = useDispatch();
+  const handleSubmit = event => {
+    event.preventDefault();
+    const existingContact = contacts?.find(
+      contact =>
+        contact.name.toLowerCase() === name.toLowerCase() &&
+        contact.phone === phone
+    );
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const newElement = { id: nanoid(), name, number };
+    if (existingContact) {
+      toast.error(`${name} already exists in the contact list.`);
+      return;
+    }
 
-    contacts.some(contact => contact.name === name)
-      ? toast.error(
-          `${name}`,
-          'This user is already in the contact list.',
-          'OK'
-        )
-      : dispatch(addContact(newElement));
+    createContact({ name, phone })
+      .then(() => {
+        toast.success(`${name} is added to the contact list.`);
+        setName('');
+        setPhone('');
+      })
+      .catch(() => {
+        toast.error(`Failed to add ${name} to the contact list.`);
+      });
+  };
 
-    setName('');
-    setNumber('');
+  const handleNameChange = event => {
+    setName(event.target.value);
+  };
+
+  const handlePhoneChange = event => {
+    setPhone(event.target.value);
   };
 
   return (
@@ -40,7 +54,7 @@ function ContactForm() {
           <input
             className={css.inputName}
             value={name}
-            onChange={onChangeName}
+            onChange={handleNameChange}
             placeholder="name"
             type="text"
             name="name"
@@ -53,11 +67,11 @@ function ContactForm() {
           Number
           <input
             className={css.inputNumber}
-            value={number}
-            onChange={onChangeNunber}
+            value={phone}
+            onChange={handlePhoneChange}
             placeholder="number"
             type="tel"
-            name="number"
+            name="phone"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
             required
@@ -68,8 +82,9 @@ function ContactForm() {
         className={css.btnSubmit}
         type="submit"
         aria-label="button-submit"
+        disabled={isLoading}
       >
-        Add contact
+        {isLoading ? 'Adding...' : 'Add contact'}
       </button>
     </form>
   );

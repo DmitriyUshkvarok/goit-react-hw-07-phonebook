@@ -1,12 +1,14 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { changeFilter, getFilter } from '../../redux/contactsSlice';
+import { useDispatch } from 'react-redux';
+import { changeFilter } from 'redux/contactsSlice';
 import css from './Filter.module.css';
 
 const Filter = () => {
-  const filter = useSelector(getFilter);
   const dispatch = useDispatch();
 
-  const changeFieldFilter = e => dispatch(changeFilter(e.currentTarget.value));
+  const changeFieldFilter = e => {
+    const value = e.currentTarget.value;
+    dispatch(changeFilter(value));
+  };
   return (
     <label>
       <input
@@ -15,7 +17,6 @@ const Filter = () => {
         type="text"
         name="filter"
         onChange={changeFieldFilter}
-        value={filter}
         pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
         title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
         required
@@ -25,4 +26,3 @@ const Filter = () => {
 };
 
 export default Filter;
-
